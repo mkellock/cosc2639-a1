@@ -7,4 +7,4 @@ automatic_scaling:
   min_num_instances: 1
   max_num_instances: 1
 env_variables:
-  CORS_URLS: "https://cosc2639-assignment-1.ts.r.appspot.com"
+  CORS_URLS: "https://cosc2639-assignment-1-task-2.ts.r.appspot.com"
