@@ -59,7 +59,7 @@ export function App() {
                 // If login is unsuccessful
                 if (result.data.userByIdPassword === null) {
                     setLoginInError(true);
-                    setLogInErrorMessage('There was an error logging in, please ensure that your id and password is correct and that your profile has been created');
+                    setLogInErrorMessage('ID or password is invalid');
                 } else {
                     // If authentication passes
                     setForumHidden(false);
@@ -104,19 +104,21 @@ export function App() {
                 variables: registerUserVariables,
             })
             .then((result) => {
-                if (result.data.registerUser) {
+                if (result.data.registerUser === 0) {
                     // If registration passes
-                    setForumHidden(false);
-                    setMainUIHidden(false);
                     setRegisterHidden(true);
                     setRegisterError(false);
 
-                    loadUser({ id: registerDetails.id, username: registerDetails.username });
-                    loadForumMessages(registerDetails.id);
-                } else {
-                    // If registration fails
+                    // Go back to the login screen
+                    onLogoutClick();
+                } else if (result.data.registerUser === 1) {
+                    // If id exists
                     setRegisterError(true);
-                    setRegisterInErrorMessage('There was an error registering your profile, plese ensure you are not already registerd and your details are correct');
+                    setRegisterInErrorMessage('The ID already exists');
+                } else if (result.data.registerUser === 2) {
+                    // If id exists
+                    setRegisterError(true);
+                    setRegisterInErrorMessage('The username already exists');
                 }
             });
     };

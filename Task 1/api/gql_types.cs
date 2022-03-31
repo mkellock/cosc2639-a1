@@ -71,6 +71,22 @@ namespace api
             if (result.Count > 0) return result[0];
             else return null;
         }
+
+        public Entity? UserEntityByUsername(string username)
+        {
+            DatastoreDb db = DatastoreDb.Create("cosc2639-assignment-1");
+
+            Google.Cloud.Datastore.V1.Query query = new("user")
+            {
+                Filter = Filter.Equal("user_name", username),
+                Limit = 1
+            };
+
+            IReadOnlyList<Entity> result = db.RunQuery(query).Entities;
+
+            if (result.Count > 0) return result[0];
+            else return null;
+        }
     }
 
     public class Query
@@ -81,7 +97,11 @@ namespace api
 
             DatastoreDb db = DatastoreDb.Create("cosc2639-assignment-1");
 
-            Google.Cloud.Datastore.V1.Query query = new("message");
+            Google.Cloud.Datastore.V1.Query query = new("message")
+            {
+                Order = { { "post_time", PropertyOrder.Types.Direction.Descending }},
+                Limit = 10
+            };
 
             foreach (Entity entity in db.RunQuery(query).Entities)
             {
@@ -188,29 +208,32 @@ namespace api
             return true;
         }
 
-        public bool RegisterUser(string id, string username, string password, string image)
+        public int RegisterUser(string id, string username, string password, string image)
         {
             DatastoreDb db = DatastoreDb.Create("cosc2639-assignment-1");
             Entity user = new();
             KeyFactory keyFactory = db.CreateKeyFactory("user");
             Helpers helper = new();
 
-            Entity? existingUser = helper.UserEntityById(id);
-
-            if (existingUser == null)
-            {
-                SaveImage(image, id + ".gif");
-
-                user.Key = keyFactory.CreateIncompleteKey();
-                user["id"] = id;
-                user["user_name"] = username;
-                user["password"] = password;
-
-                db.Insert(user);
-
-                return true;
+            if (helper.UserEntityById(id) != null) {
+                return 1;
             }
-            else return false;
+
+            if (helper.UserEntityByUsername(username) != null)
+            {
+                return 2;
+            }
+
+            SaveImage(image, id + ".gif");
+
+            user.Key = keyFactory.CreateIncompleteKey();
+            user["id"] = id;
+            user["user_name"] = username;
+            user["password"] = password;
+
+            db.Insert(user);
+
+            return 0;
         }
 
         private static void SaveImage(string image, string fileName)

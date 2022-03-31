@@ -5,7 +5,6 @@ export interface RegisterDetails {
     id: string;
     username: string;
     password: string;
-    confirmationPassword: string;
     image: string | ArrayBuffer | null;
 }
 
@@ -20,7 +19,6 @@ export function Register(props: InputProps) {
     const [id, setId] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [confirmationPassword, setConfirmPassword] = useState('');
     const [image, setImage] = useState<string | ArrayBuffer | null>(null);
     const [inError, setInError] = useState<boolean>();
     const [errorMessage, setErrorMessage] = useState<string>();
@@ -29,18 +27,14 @@ export function Register(props: InputProps) {
         setInError(false);
         setErrorMessage('');
 
-        if (id.length === 0 || username.length === 0 || password.length === 0 || confirmationPassword.length === 0 || image === null) {
+        if (id.length === 0 || username.length === 0 || password.length === 0 || image === null) {
             setInError(true);
             setErrorMessage('Please fill in all form fields');
-        } else if (password !== confirmationPassword) {
-            setInError(true);
-            setErrorMessage('Please ensure your password and confirmation password fields match');
         } else {
             const registerDetails: RegisterDetails = {
                 id: id,
                 username: username,
                 password: password,
-                confirmationPassword: confirmationPassword,
                 image: image,
             };
 
@@ -79,7 +73,6 @@ export function Register(props: InputProps) {
                     <Input onChange={(e) => setId(e.target.value)} placeholder="ID" />
                     <Input onChange={(e) => setUsername(e.target.value)} placeholder="Username" />
                     <Input onChange={(e) => setPassword(e.target.value)} placeholder="Password" type="password" />
-                    <Input onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Confirm Password" type="password" />
                     <Input onChange={(e) => handleFileChange(e)} placeholder="User Image" type="file" />
                     <Button onClick={submit}>Register</Button>
                 </Stack>
