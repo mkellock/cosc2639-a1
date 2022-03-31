@@ -27,8 +27,6 @@ export function User(props: InputProps) {
     const [newPassword, setNewPassword] = useState<string>();
 
     const messageEdit = (messageId: number) => {
-        setId(id);
-
         props.messages?.forEach((tempMessage) => {
             if (tempMessage.id === messageId) {
                 setId(tempMessage.id);
@@ -40,7 +38,10 @@ export function User(props: InputProps) {
     };
 
     const onMessageSubmit = (submitProps: EditMessageProps) => {
-        setImage('placeholder.png');
+        setId(undefined);
+        setSubject("");
+        setMessage("");
+        setImage('placeholder.png')
         props.onMessageSubmit(submitProps);
     };
 

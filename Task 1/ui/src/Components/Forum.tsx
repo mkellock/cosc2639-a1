@@ -25,7 +25,7 @@ export function Forum(props: InputProps) {
                         No messages to display
                     </Alert>
                 ) : (
-                    props.messages?.map((message: MessageProps) => <Message key={message.id} id={message.id} subject={message.subject} contents={message.contents} username={message.username} postTime={message.postTime}></Message>)
+                    props.messages?.map((message: MessageProps) => <Message key={message.id} id={message.id} subject={message.subject} contents={message.contents} userid={message.userid} username={message.username} postTime={message.postTime}></Message>)
                 )}
             </>
         );

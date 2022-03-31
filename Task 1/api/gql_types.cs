@@ -14,12 +14,14 @@ namespace api
             Id = 0;
             Subject = "";
             Contents = "";
+            UserId = "";
             Username = "";
         }
 
         public int Id { get; set; }
         public string Subject { get; set; }
         public string Contents { get; set; }
+        public string UserId { get; set; }
         public string Username { get; set; }
         public DateTime PostTime { get; set; }
     }
@@ -38,13 +40,13 @@ namespace api
 
     public class Helpers
     {
-        public Entity? UserEntityByUsernamePassword(string username, string password)
+        public Entity? UserEntityByIdPassword(string id, string password)
         {
             DatastoreDb db = DatastoreDb.Create("cosc2639-assignment-1");
 
             Google.Cloud.Datastore.V1.Query query = new("user")
             {
-                Filter = Filter.And(new[] { Filter.Equal("user_name", username), Filter.Equal("password", password) }),
+                Filter = Filter.And(new[] { Filter.Equal("id", id), Filter.Equal("password", password) }),
                 Limit = 1
             };
 
@@ -54,13 +56,13 @@ namespace api
             else return null;
         }
 
-        public Entity? UserEntityByUsername(string username)
+        public Entity? UserEntityById(string id)
         {
             DatastoreDb db = DatastoreDb.Create("cosc2639-assignment-1");
 
             Google.Cloud.Datastore.V1.Query query = new("user")
             {
-                Filter = Filter.Equal("user_name", username),
+                Filter = Filter.Equal("id", id),
                 Limit = 1
             };
 
@@ -88,6 +90,7 @@ namespace api
                     Id = (int)entity["id"],
                     Subject = (string)entity["subject"],
                     Contents = (string)entity["contents"],
+                    UserId = (string)entity["user_id"],
                     Username = (string)entity["user_name"],
                     PostTime = new DateTime().AddTicks((long)entity["post_time"])
                 });
@@ -96,11 +99,11 @@ namespace api
             return returnMessages;
         }
 
-        public User? UserByUsernamePassword(string username, string password)
+        public User? UserByIdPassword(string id, string password)
         {
             Helpers helper = new();
 
-            Entity? user = helper.UserEntityByUsernamePassword(username, password);
+            Entity? user = helper.UserEntityByIdPassword(id, password);
 
             if (user != null)
             {
@@ -116,11 +119,11 @@ namespace api
 
     public class Mutation
     {
-        public Boolean UpdatePassword(string username, string oldPassword, string newPassword)
+        public Boolean UpdatePassword(string id, string oldPassword, string newPassword)
         {
             Helpers helper = new();
 
-            Entity? user = helper.UserEntityByUsernamePassword(username, oldPassword);
+            Entity? user = helper.UserEntityByIdPassword(id, oldPassword);
 
             if (user == null)
             {
@@ -138,7 +141,7 @@ namespace api
             }
         }
 
-        public Boolean Message(int? id, string subject, string contents, string username, string? image)
+        public Boolean Message(int? id, string subject, string contents, string userId, string userName, string? image)
         {
             DatastoreDb db = DatastoreDb.Create("cosc2639-assignment-1");
             Entity message = new();
@@ -164,7 +167,8 @@ namespace api
 
             message["subject"] = subject;
             message["contents"] = contents;
-            message["user_name"] = username;
+            message["user_id"] = userId;
+            message["user_name"] = userName;
             message["post_time"] = DateTime.UtcNow.Ticks;
 
             if (image != null)
@@ -191,7 +195,7 @@ namespace api
             KeyFactory keyFactory = db.CreateKeyFactory("user");
             Helpers helper = new();
 
-            Entity? existingUser = helper.UserEntityByUsername(username);
+            Entity? existingUser = helper.UserEntityById(id);
 
             if (existingUser == null)
             {

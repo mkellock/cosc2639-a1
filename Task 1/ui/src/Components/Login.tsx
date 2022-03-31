@@ -2,7 +2,7 @@ import { Stack, Input, Button, Link, Alert, AlertIcon } from '@chakra-ui/react';
 import { useState } from 'react';
 
 export interface LoginDetails {
-    username: string;
+    id: string;
     password: string;
 }
 
@@ -15,7 +15,7 @@ export interface InputProps {
 }
 
 export function Login(props: InputProps) {
-    const [username, setUsername] = useState('');
+    const [id, setId] = useState('');
     const [password, setPassword] = useState('');
     const [inError, setInError] = useState<boolean>();
     const [errorMessage, setErrorMessage] = useState<string>();
@@ -24,12 +24,12 @@ export function Login(props: InputProps) {
         setInError(false);
         setErrorMessage('');
 
-        if (username.length === 0 || password.length === 0) {
+        if (id.length === 0 || password.length === 0) {
             setInError(true);
-            setErrorMessage('Please enter your username and password');
+            setErrorMessage('Please enter your id and password');
         } else {
             const loginDetails: LoginDetails = {
-                username: username,
+                id: id,
                 password: password,
             };
 
@@ -48,7 +48,7 @@ export function Login(props: InputProps) {
                     </Alert>
                 ) : null}
                 <Stack spacing={3} width={450} padding={3} hidden={false}>
-                    <Input onChange={(e) => setUsername(e.target.value)} placeholder="Username" />
+                    <Input onChange={(e) => setId(e.target.value)} placeholder="Id" />
                     <Input onChange={(e) => setPassword(e.target.value)} placeholder="Password" type="password" />
                     <Button onClick={submit}>Login</Button>
                     <Link onClick={props.onRegister}>Register</Link>

@@ -4,6 +4,7 @@ export interface MessageProps {
     id: number,
     subject: string,
     contents: string,
+    userid: string,
     username: string,
     postTime: number,
 }

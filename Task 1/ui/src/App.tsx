@@ -27,7 +27,7 @@ export function App() {
 
     let gqlUri = '/graphql';
 
-    //gqlUri = 'http://localhost:8080/graphql';
+    gqlUri = 'http://localhost:8080/graphql';
 
     const client = new ApolloClient({
         uri: gqlUri,
@@ -37,8 +37,8 @@ export function App() {
     const onLoginSubmit = (loginDetails: LoginDetails) => {
         // Call API to authenticate user
         const getLoginDetails = gql`
-            query userByUsernamePassword($username: String!, $password: String!) {
-                userByUsernamePassword(username: $username, password: $password) {
+            query userByIdPassword($id: String!, $password: String!) {
+                userByIdPassword(id: $id, password: $password) {
                     id
                     username
                 }
@@ -46,7 +46,7 @@ export function App() {
         `;
 
         const loginVariables = {
-            username: loginDetails.username,
+            id: loginDetails.id,
             password: loginDetails.password,
         };
 
@@ -57,9 +57,9 @@ export function App() {
             })
             .then((result) => {
                 // If login is unsuccessful
-                if (result.data.userByUsernamePassword === null) {
+                if (result.data.userByIdPassword === null) {
                     setLoginInError(true);
-                    setLogInErrorMessage('There was an error logging in, please ensure that your username and password is correct and that your profile has been created');
+                    setLogInErrorMessage('There was an error logging in, please ensure that your id and password is correct and that your profile has been created');
                 } else {
                     // If authentication passes
                     setForumHidden(false);
@@ -67,8 +67,8 @@ export function App() {
                     setLoginHidden(true);
 
                     // Load the user's data
-                    loadForumMessages(result.data.userByUsernamePassword.username);
-                    loadUser({ ...result.data.userByUsernamePassword });
+                    loadForumMessages(result.data.userByIdPassword.id);
+                    loadUser({ ...result.data.userByIdPassword });
                 }
             });
     };
@@ -112,7 +112,7 @@ export function App() {
                     setRegisterError(false);
 
                     loadUser({ id: registerDetails.id, username: registerDetails.username });
-                    loadForumMessages(registerDetails.username);
+                    loadForumMessages(registerDetails.id);
                 } else {
                     // If registration fails
                     setRegisterError(true);
@@ -140,8 +140,8 @@ export function App() {
     const onMessageSubmit = (props: EditMessageProps) => {
         // Call API to add/update message
         const messageSubmit = gql`
-            mutation message($id: Int, $subject: String!, $contents: String!, $username: String!, $image: String) {
-                message(id: $id, subject: $subject, contents: $contents, username: $username, image: $image)
+            mutation message($id: Int, $subject: String!, $contents: String!, $userId: String!, $userName: String!, $image: String) {
+                message(id: $id, subject: $subject, contents: $contents, userId: $userId, userName: $userName, image: $image)
             }
         `;
 
@@ -149,7 +149,8 @@ export function App() {
             id: props.id,
             subject: props.subject,
             contents: props.contents,
-            username: userDetails?.username,
+            userId: userDetails?.id,
+            userName: userDetails?.username,
             image: props.image,
         };
 
@@ -159,11 +160,11 @@ export function App() {
                 variables: messageVariables,
             })
             .then(() => {
-                loadForumMessages(userDetails?.username);
+                loadForumMessages(userDetails?.id);
             });
     };
 
-    const loadForumMessages = (username: string | undefined) => {
+    const loadForumMessages = (id: string | undefined) => {
         // Call API to load forum messages
         const getMessages = gql`
             query {
@@ -171,6 +172,7 @@ export function App() {
                     id
                     subject
                     contents
+                    userId
                     username
                     postTime
                 }
@@ -188,7 +190,7 @@ export function App() {
                 result.data.allMessages.forEach((element: any) => {
                     loadedMessages.push({ ...element });
 
-                    if (element.username === username) {
+                    if (element.userId === id) {
                         loadedUserMessages.push({ ...element });
                     }
                 });
@@ -205,13 +207,13 @@ export function App() {
     const updatePassword = (props: UpdatePasswordVals) => {
         // Call API to update password
         const passwordSubmit = gql`
-            mutation updatePassword($username: String!, $oldPassword: String!, $newPassword: String!) {
-                updatePassword(username: $username, oldPassword: $oldPassword, newPassword: $newPassword)
+            mutation updatePassword($id: String!, $oldPassword: String!, $newPassword: String!) {
+                updatePassword(id: $id, oldPassword: $oldPassword, newPassword: $newPassword)
             }
         `;
 
         const passwordVariables = {
-            username: userDetails?.username,
+            id: userDetails?.id,
             oldPassword: props.oldPassword,
             newPassword: props.newPassword,
         };
