@@ -27,7 +27,7 @@ export function App() {
 
     let gqlUri = '/graphql';
 
-    gqlUri = 'http://localhost:8080/graphql';
+    //gqlUri = 'http://localhost:8080/graphql';
 
     const client = new ApolloClient({
         uri: gqlUri,
