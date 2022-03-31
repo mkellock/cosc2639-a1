@@ -1,0 +1,10 @@
+runtime: custom
+env: flex
+resources:
+  cpu: 1
+  memory_gb: 0.5
+automatic_scaling:
+  min_num_instances: 1
+  max_num_instances: 1
+env_variables:
+  CORS_URLS: "https://cosc2639-assignment-1.ts.r.appspot.com"

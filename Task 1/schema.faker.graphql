@@ -1,0 +1,23 @@
+type Message {
+    id: String @fake(type: uuid)
+    subject: String @fake(type: lorem, options: { loremSize: words })
+    contents: String @fake(type: lorem, options: { loremSize: sentences })
+    username: String @fake(type: firstName)
+    postTime: String @fake(type: recentDate)
+}
+
+type User {
+    id: String @examples(values: ["s38125520", "s38125521", "s38125522", "s38125523", "s38125524", "s38125525", "s38125526", "s38125527", "s38125528", "s38125529"])
+    username: String @fake(type: firstName)
+}
+
+type Query {
+    allMessages: [Message] @listLength(min: 5, max: 10)
+    user(username: String, password: String): User
+}
+
+type Mutation {
+    updatePassword(oldPassword: String, newPassword: String): Boolean
+    message(id: String, subject: String, contents: String, username: String, image: String): Boolean
+    registerUser(id: String, username: String, password: String, image: String): User
+}
