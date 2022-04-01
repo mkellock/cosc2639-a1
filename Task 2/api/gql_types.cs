@@ -7,7 +7,6 @@ namespace api
     public class HighestTradeValue
     {
         public long Time { get; set; }
-
         public double TradeValue { get; set; }
     }
 
