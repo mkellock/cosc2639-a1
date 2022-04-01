@@ -1,0 +1,15 @@
+Name:           Matthew Kellock
+Student No.:    s3812552
+
+-- Task 3 --
+For assignment 3 I intend to implement a social networking app, however my motivations are to implement an enterprise level, (virtually) infinitely scalable application, thus will utilise serverless, decoupled compute (e.g., SQS, Lambda, S3, API Gateway, CloudFront, ECS Fargate, Docker Hub, and DynamoDB), AWS QuickSight for management dashboards, and have the application deployable via Cloud Formation (so I can build out CI/CD pipeline in GitHub and have the application automatically deploy to AWS). This should give me a good grounding in DevOps practice whilst fulfilling the rubric of the assignment.
+
+The application will likely do the following:
+-	A user can sign up or log in to the application (API Gateway, Lambda, DynamoDB)
+-	After logging in, the user lands on the homepage with a collation of user posts from various groups (API Gateway, Lambda, DynamoDB)
+-	The user can scroll through videos and images (API Gateway, Lambda, DynamoDB, CloudFront, S3)
+-	The user can then search for a group (API Gateway, Lambda, DynamoDB)
+-	Upon finding and entering group, the user can post a message in that group (API Gateway, Lambda)
+-	After a post is made, any image/video is resized to appropriate dimensions for sharing (SQS, ECS Fargate, S3)
+-	If the user that is logging in is an admin, they have an additional option to go to a metrics page to see intel on the communities (QuickSight)
+-	Lastly, each post will have its location identified by iplocation.net, a free API for determining geolocation (https://api.iplocation.net/), or an equivalent asynchronously (SQS, Lambda, DynamoDB)
